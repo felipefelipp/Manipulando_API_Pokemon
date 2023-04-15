@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Manipulando_API_Pokemon.Model;
+using Newtonsoft.Json;
 using RestSharp;
 using System;
 using System.Collections.Generic;
@@ -8,24 +9,26 @@ using System.Threading.Tasks;
 
 namespace Manipulando_API_Pokemon.API
 {
-    public  class Pokemon
-    { 
-        public void BuscarPokemon(string nome)
+    public static class APIComunicacao
+    {
+        public static Pokemon RetornarJSONAPIPokemon(string nome)
         {
             var client = new RestClient($"https://pokeapi.co/api/v2/"); // api
             RestRequest request = new RestRequest($"pokemon/{nome}", Method.Get); // rota
             var response = client.Execute(request);
 
-            if(response.StatusCode == System.Net.HttpStatusCode.OK)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                var pokemon = JsonConvert.DeserializeObject(response.Content);
-                Console.WriteLine(JsonConvert.SerializeObject(pokemon, Formatting.Indented));    
-            } else
+                var pokemon = JsonConvert.DeserializeObject<Pokemon>(response.Content);
+                return pokemon;
+
+            }
+            else
             {
                 Console.WriteLine(response.ErrorMessage);
+                return null;
             }
-            Console.ReadKey();
         }
 
     }
-} 
+}
