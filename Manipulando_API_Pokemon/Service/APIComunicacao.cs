@@ -30,5 +30,22 @@ namespace Manipulando_API_Pokemon.API
             }
         }
 
+        public static Especie RetornarJSONAPIListaEspecies()
+        {
+            var client = new RestClient($"https://pokeapi.co/api/v2/");
+            RestRequest request = new RestRequest($"pokemon/", Method.Get);
+            var response = client.Execute(request);
+
+            if(response.StatusCode == System.Net.HttpStatusCode.OK) 
+            {
+                var especies = JsonConvert.DeserializeObject<Especie>(response.Content);
+                return especies ;
+            } else
+            {
+                Console.WriteLine(response.ErrorMessage);
+                return null;
+            }
+        }
+
     }
 }
