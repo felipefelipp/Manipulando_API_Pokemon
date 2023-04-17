@@ -32,4 +32,4 @@ using Manipulando_API_Pokemon.View;
 //        Console.WriteLine(e.Name);
 //    }
 
-new Menu().Jogar();
+new MenuView().IniciarJogo();
