@@ -4,10 +4,10 @@ using Newtonsoft.Json;
 
 namespace Manipulando_API_Pokemon.Model
 {
-    public class Pokemon 
+    public class Pokemon
     {
 
-        [JsonProperty("name")]    
+        [JsonProperty("name")]
         public string Name { get; set; }
 
         [JsonProperty("height")]
@@ -20,10 +20,23 @@ namespace Manipulando_API_Pokemon.Model
         public List<Abilities> Abilities { get; set; }
 
         [JsonProperty("stats")]
-        
+
         public List<Stats> Stats { get; set; }
 
-        public Pokemon BuscarPokemon(string nome) => APIComunicacao.RetornarJSONAPIPokemon(nome);      
+        public int Fome { get; set; }
+
+        public int Sono { get; set; }
+
+        public int Humor { get; set; }
+
+        public Pokemon() {
+            this.Fome = 0;
+            this.Sono = 0;
+            this.Humor = Fome + Sono;
+        }
+
+
+        public Pokemon BuscarPokemon(string nome) => APIComunicacao.RetornarJSONAPIPokemon(nome);
 
     }
 }

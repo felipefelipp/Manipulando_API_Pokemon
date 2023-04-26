@@ -9,119 +9,101 @@ using static System.Net.Mime.MediaTypeNames;
 
 namespace Manipulando_API_Pokemon.Controller
 {
-    // MenuController.cs
+
 
     public class PokemonController
     {
+
+        private readonly PokemonView pokemonView;
         private readonly Usuario usuario;
 
         public PokemonController()
         {
             usuario = new Usuario();
+            pokemonView = new PokemonView();
         }
 
         public void Jogar()
         {
-            
 
-            Console.WriteLine("****************************************");
-            Console.WriteLine("*******         POKEMÓN         ********");
-            Console.WriteLine("****************************************");
+            pokemonView.MensagemInicial(usuario);
 
-            Console.WriteLine("Qual o seu nome?");
-
-            usuario.Name = Console.ReadLine();
-
-            Console.WriteLine($"Seja bem vindo {usuario.Name}!\n\n ");
             char opcaoSelecionada = '0';
             while (opcaoSelecionada != '6')
             {
-                Console.Clear();
-                Console.WriteLine("O que você deseja? ");
-                Console.WriteLine("1 - Adotar um Pokemon");
-                Console.WriteLine("2 - Ver seus Pokemons");
-                Console.WriteLine("6 - Sair");
 
-                opcaoSelecionada = Console.ReadLine()[0];
+                pokemonView.Opcoes();
+
+                try
+                {
+                    opcaoSelecionada = Console.ReadLine()[0];
+                }
+                catch (IndexOutOfRangeException ex)
+                { 
+                    Console.WriteLine(ex.Message);
+                }   
 
                 switch (opcaoSelecionada)
                 {
                     case '1':
-                        ExibirEspecies();
-                       // try {
-                            usuario.Pokemons.Add(AdicionarPokemon());
-                        //}
-                        //catch(Exception ex)
-                        //{
-                        //    Console.WriteLine(ex.Message + "Pokemon não encontrado, tente novamente: ");
-                        //    //Console.Read();
-                        //    //usuario.Pokemons.Add(AdicionarPokemon());
-                            
-                        //}
-                       // Console.WriteLine("Teste");
-                       // Console.Read();
+                        pokemonView.ExibirEspecies();
+                        AddPokemon(usuario);
                         break;
                     case '2':
-                        ExibirPokemons();
+                        pokemonView.ExibirPokemon(usuario);
+                        break;
+                    case '3':
+                        pokemonView.ExibirListaPokemons(usuario);
                         break;
                     case '6':
-                        EncerrarAplicacao();
-                        //Application.Exit();
+                        pokemonView.EncerrarAplicacao();
+                        break;
+                    default:
+                        Console.WriteLine("Esta opção não existe!");
+                        Console.ReadKey();
                         break;
                 }
-                 
+
             }
         }
 
-        private void ExibirEspecies()
+        private void AddPokemon(Usuario usuario)
         {
-            Console.WriteLine("Escolha uma das espécies a seguir:\n");
-            var especie = new Especie().ListarEspecies();
-
-            foreach (var lista in especie.Results)
+            Pokemon pokemon = BuscarPokemon();
+            if (pokemon != null) 
             {
-                Console.WriteLine(lista.Name);
-            }
-        }
-
-        private Pokemon AdicionarPokemon()
-        {
-            Console.WriteLine("\nInsira o nome: ");
-            string nomeEspecie = Console.ReadLine();
-            Pokemon pokemonSelecionado = new Pokemon();
-            return pokemonSelecionado.BuscarPokemon(nomeEspecie);
-        }
-
-        private void ExibirPokemons()
-        {
-            foreach (var pokemon in usuario.Pokemons)
-            {
-                Console.WriteLine("*******************************************");
-                Console.WriteLine($"Pokemon: {pokemon.Name}");
-                Console.WriteLine($"Altura: {pokemon.Height}cm");
-                Console.WriteLine($"Peso: {pokemon.Weight}kg");
-                Console.WriteLine("\nHabilidades: ");
-                foreach (var abilities in pokemon.Abilities)
-                {
-                    Console.WriteLine(abilities.ability.name);
-                }
-                Console.WriteLine("\nEstatísticas: ");
-                foreach (var stat in pokemon.Stats)
-                {
-                    Console.WriteLine($"Estatística: {stat.Stat.Name}");
-                    Console.WriteLine($"Valor: {stat.Base_stat}");
-                }
-
-            }
-            Console.ReadKey();
-        }
-
-        private void EncerrarAplicacao()
-        {
-            Console.WriteLine("... Encerrando a aplicação ...");
-            Console.ReadKey();
+                usuario.Pokemons.Add(pokemon);
+            } 
             
         }
+
+        private Pokemon BuscarPokemon()
+        {
+            try
+            {
+                Console.WriteLine("\nInsira o nome: ");
+                string nomeEspecie = Console.ReadLine();
+                Pokemon pokemonSelecionado = new Pokemon();
+
+                var pokemonRetorno = pokemonSelecionado.BuscarPokemon(nomeEspecie);
+                if (pokemonRetorno == null)
+                {
+                    throw new NullReferenceException("Não foi possível encontrar o Pokémon selecionado.");
+                }
+                Console.WriteLine($"Pokemon {pokemonRetorno.Name} adotado com sucesso!");
+                Console.ReadKey();
+                return pokemonRetorno;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.GetType().ToString());
+                Console.WriteLine(ex.Message);  
+                Console.WriteLine("Pokemon não selecionado!");
+                Console.ReadKey();
+                return null;
+            }
+        }
+
     }
 
 }
