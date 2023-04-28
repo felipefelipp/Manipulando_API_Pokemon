@@ -47,7 +47,7 @@ namespace Manipulando_API_Pokemon.Controller
                 {
                     case '1':
                         pokemonView.ExibirEspecies();
-                        AddPokemon(usuario);
+                        AddPokemon();
                         break;
                     case '2':
                         pokemonView.ExibirPokemon(usuario);
@@ -67,7 +67,7 @@ namespace Manipulando_API_Pokemon.Controller
             }
         }
 
-        private void AddPokemon(Usuario usuario)
+        private void AddPokemon()
         {
             Pokemon pokemon = BuscarPokemon();
             if (pokemon != null) 
